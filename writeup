@@ -1,0 +1,56 @@
+
+Data Storage:
+    - Table 1, All Pulls:
+        - Stores date, time, and percent full
+
+
+Control:
+    - Pulls data every 10 minutes of every hour the RSF is open.
+    - First approach:
+        - Check if RSF is open (or should be) every 10 minutes of the 24 hour day
+    - Second approach:
+        - Find when RSF will open the next day and sleep until then.
+        - Set a predetermined number of iterations of pulls every 10 minutes based on how many hours the RSF will
+          be open that day.
+        - After iteration, repeat.
+        - Cons: Compounding time error
+    - Third approach:
+        - Some kind of clock object that wakes and runs the program at predetermined times depending on the day of
+          the week (hours of operation)
+        - I like this the best so far.
+    - Fourth (simplified) approach:
+        - Get current day
+        - If before opening time of that day (current datetime - open datetime = - td):
+            - Wait until open
+        - If within current hours:
+            - pull_and_write(now)
+            - sleep for predetermined interval
+        - If after closing time of that day (current datetime - close datetime = + td > close datetime - open datetime):
+            - Get next day
+            - Wait until next day open
+
+
+    - Second approach breakdown:
+        - Get current day, time and next day
+        - If not within open hours of today, wait until open next day
+        - If within open hours today:
+            - If minute is an even interval (decided by pullsPerHour):
+                - nextMinuteMark = currentMinute + round(60 / pullsPerHour)
+                - if nextMinuteMark = 60: nextMinuteMark = 0
+                - pull_and_write(now)
+            - Get new datetime object to account for program time
+            - determine how many seconds from new datetime until next even minute interval
+            - wait that many seconds
+
+
+        - Get current day and next day
+        - If outside open hours: wait until next day open with timedelta
+        - If within open hours:
+            - If even minute interval:
+                - Pull and write
+                - Wait until next interval
+            - If not on even minute interval:
+                - Wait until next interval
+
+
+
