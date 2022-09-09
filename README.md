@@ -3,7 +3,7 @@
 ![Commit Activity](https://img.shields.io/github/commit-activity/w/AidanPraytor/rsf-crowd-analysis)
 [Public GitHub repository][git]
 
-Are you tired of thinking you'll beat the crowd to the RSF, just to shuffle around the crowded gym with nothing but the weight of your disappointment to bench press? I know I am!
+Are you tired of thinking you'll beat the crowd to the RSF, just to shuffle around the gym with nothing but the weight of your disappointment to bench press? I know I am!
 
 This is a project I thought about last year and have only now gotten around to making. It's still in its very early stages, so don't be surprised by the lack of collected data and rudementary code. That being said, it's my first step towards a fully-fledged app or website that compiles RSF crowd data in order to predict trends in weightroom crowdedness and provide users with optimal times to workout.
 
