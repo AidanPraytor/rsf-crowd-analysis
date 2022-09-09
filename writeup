@@ -2,6 +2,8 @@
 Data Storage:
     - Table 1, All Pulls:
         - Stores date, time, and percent full
+    - New file created in data folder for every day.
+        - Data is written to a file for its own day and the allPulls file
 
 
 Control:

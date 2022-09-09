@@ -7,6 +7,7 @@ import csv
 import datetime
 import scraper
 import time
+from os import path
 
 weekdayHours = (7, 23)
 saturdayHours = (8, 18)
@@ -14,18 +15,35 @@ sundayHours = (8, 23)
 
 pullsPerHour = 12
 
+crowdMeter = 'https://safe.density.io/#/displays/dsp_956223069054042646?token' \
+             '=shr_o69HxjQ0BYrY2FPD9HxdirhJYcFDCeRolEd744Uj88e '
+
 
 def pull_and_write(now):
     """Call scraper.retrieve(), write returned data to .csv
 
     :param now: datetime object containing current year, month, day, hour, minute, second
     """
-    with open('data/allPulls.csv', mode='a') as data:
-        data_writer = csv.writer(data, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-        data_writer.writerow([now.strftime("%Y"), now.strftime("%m"), now.strftime("%d"),
-                              now.strftime("%a"), now.strftime("%H:%M"),
-                              scraper.retrieve(url='https://safe.density.io/#/displays/dsp_956223069054042646?token'
-                                                   '=shr_o69HxjQ0BYrY2FPD9HxdirhJYcFDCeRolEd744Uj88e')])
+    year, month, dayOfMonth = now.strftime("%Y"), now.strftime("%m"), now.strftime("%d")
+    dayOfWeek, hourMinute = now.strftime("%a"), now.strftime("%H:%M")
+
+    todayFileName = 'data/' + month + dayOfMonth + year + '.csv'
+    writeTo = ['data/allPulls.csv', todayFileName]
+
+    pulledData = scraper.retrieve(url=crowdMeter)
+
+    if not path.isfile(todayFileName):
+        print("File for today's data not found. Creating one now!")
+        with open(todayFileName, mode='w') as data:
+            data_writer = csv.writer(data, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+            data_writer.writerow(['year', 'month', 'day of month', 'day of week', 'time', 'percent full'])
+    else:
+        print("File for today's data found. Writing to " + str(len(writeTo)) + " file(s) now")
+
+    for f in writeTo:
+        with open(f, mode='a') as data:
+            data_writer = csv.writer(data, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+            data_writer.writerow([year, month, dayOfMonth, dayOfWeek, hourMinute, pulledData])
 
 
 def check(cdt, PPH):
