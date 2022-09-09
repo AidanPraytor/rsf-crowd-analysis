@@ -15,6 +15,7 @@ The project is barebones for now, but it is very much under active development. 
 
 **Short-term:**
 - Incorporate edge case support for holidays and such days when the RSF has odd hours of operation.
+- Add timeout exception handling to not halt data collection when page fails to load.
 - Data visualization support, including easy switching between day, week, month, year views.
 - Optimize the automation. The current implementation is a quick and dirty solution to a surprisingly annoying problem, but I would like for the automation to be far more exact and far less resource consuming. Hoping for something along the lines of a task scheduler system like in Windows.
 
