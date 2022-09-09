@@ -22,7 +22,7 @@ def pull_and_write(now):
     """
     with open('data/allPulls.csv', mode='a') as data:
         data_writer = csv.writer(data, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-        data_writer.writerow([now.strftime("%Y"), now.strftime("%d"),
+        data_writer.writerow([now.strftime("%Y"), now.strftime("%m"), now.strftime("%d"),
                               now.strftime("%a"), now.strftime("%H:%M"),
                               scraper.retrieve(url='https://safe.density.io/#/displays/dsp_956223069054042646?token'
                                                    '=shr_o69HxjQ0BYrY2FPD9HxdirhJYcFDCeRolEd744Uj88e')])
