@@ -5,7 +5,10 @@ data to data/allPulls.csv.
 
 import csv
 import datetime
+import os
+
 import scraper
+import visualizer
 import time
 from os import path
 
@@ -30,20 +33,22 @@ def pull_and_write(now):
     todayFileName = 'data/' + month + dayOfMonth + year + '.csv'
     writeTo = ['data/allPulls.csv', todayFileName]
 
-    pulledData = scraper.retrieve(url=crowdMeter)
+    pulledData = scraper.retrieve()
 
     if not path.isfile(todayFileName):
         print("File for today's data not found. Creating one now!")
         with open(todayFileName, mode='w') as data:
             data_writer = csv.writer(data, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-            data_writer.writerow(['year', 'month', 'day of month', 'day of week', 'time', 'percent full'])
+            data_writer.writerow(['Date and Time', '% Full'])
     else:
         print("File for today's data found. Writing to " + str(len(writeTo)) + " file(s) now")
 
     for f in writeTo:
         with open(f, mode='a') as data:
             data_writer = csv.writer(data, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-            data_writer.writerow([year, month, dayOfMonth, dayOfWeek, hourMinute, pulledData])
+            data_writer.writerow([year + '-' + month + '-' + dayOfMonth + ' ' + hourMinute, pulledData])
+
+    scraper.driver.quit()
 
 
 def check(cdt, PPH):
@@ -87,4 +92,45 @@ def check(cdt, PPH):
     check(datetime.datetime.now(), PPH)
 
 
-check(datetime.datetime.now(), pullsPerHour)
+def interact():
+    print("Welcome. Use '0' to go back in any of the following prompts.")
+    record_data = input("Record data? [y/n]: ")
+    if record_data == 'y':
+        check(datetime.datetime.now(), pullsPerHour)
+    elif record_data == 'n':
+        control_visualizer()
+    elif record_data == '0':
+        print("Goodbye.")
+    else:
+        print("Unknown entry. Please try again.")
+        interact()
+
+
+def control_visualizer():
+    print("[1] To visualize all available data.\n[2] To visualize a specific day.")
+    q1 = input("Enter an option from above:")
+    if q1 == '1':
+        visualizer.visualize_with_pd('data/allPulls.csv')
+    elif q1 == '2':
+        days = os.listdir('data')
+        numeratedDays = ["[" + str(i + 1) + "] " + days[i] for i in range(len(days))]
+        for day in numeratedDays:
+            print(day)
+        chosenDay = input("Select desired day with associated number: ")
+        if input == '0':
+            control_visualizer()
+        try:
+            chosenDayFile = days[int(chosenDay) - 1]
+            visualizer.visualize_with_pd('data/' + chosenDayFile)
+        except IndexError:
+            print("Input invalid. Please try again.")
+            control_visualizer()
+
+    elif q1 == '0':
+        interact()
+    else:
+        print("Unknown entry. Please try again.")
+        control_visualizer()
+
+
+interact()
